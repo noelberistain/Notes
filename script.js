@@ -21,27 +21,29 @@ var j = 0;
     });
 })(temp1);
 
-    container.addEventListener("click", function (event) {
-        if (event.target.getAttribute("name") == "trash")
-            container.removeChild(event.target.parentNode);
-    });
-
-    container.addEventListener("click", function (event) {
-        var textNode = '', edit = event.target.getAttribute("name");
-        var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
-        if (edit === "edit") {
-            if (textarea.disabled) {
-                enableText(textarea);
-            }
-            else {
-                disableText(textarea)
-                var b = event.target.firstChild;
-                b.nextElementSibling.textContent = getDate();
-                textNode = document.createTextNode(textarea.value);
-                textarea.appendChild(textNode);
-            }
+container.addEventListener("click", function (event) {
+    var data = [];
+    var textNode = '', edit = event.target.getAttribute("name");
+    var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
+    if (event.target.getAttribute("name") == "trash") {
+        container.removeChild(event.target.parentNode);
+    }
+    if (edit === "edit") {
+        if (textarea.disabled) {
+            enableText(textarea);
         }
-    });
+        else {
+            disableText(textarea)
+            var b = event.target.firstChild;
+            b.nextElementSibling.textContent = getDate();
+            textNode = document.createTextNode(textarea.value);
+            textarea.appendChild(textNode);
+        }
+    }
+    if (event.target.getAttribute("name") == "save") {
+        console.log("Matanga dijo la changa")
+    }
+});
 
 function getDate() {
     var upDate, mins, secs, time, date;
@@ -62,13 +64,6 @@ function getDate() {
     return date + " - " + time;
 }
 
-    container.addEventListener("click", function (event) {
-        var data = [];
-        if (event.target.getAttribute("name") == "save") {
-
-            }
-        });
-    
 function enableText(b) {
     b.disabled = false;
     b.focus();
