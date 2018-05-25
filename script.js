@@ -21,14 +21,11 @@ var j = 0;
     });
 })(temp1);
 
-(function deleteNote() {
     container.addEventListener("click", function (event) {
         if (event.target.getAttribute("name") == "trash")
             container.removeChild(event.target.parentNode);
     });
-})();
 
-(function editNote() {
     container.addEventListener("click", function (event) {
         var edit = event.target.getAttribute("name");
         var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
@@ -40,12 +37,10 @@ var j = 0;
                 disableText(textarea)
                 var b = event.target.firstChild;
                 b.nextElementSibling.textContent = getDate();
-                return textarea.value;
+
             }
         }
-
     });
-})();
 
 function getDate() {
     var upDate, mins, secs, time, date;
@@ -67,15 +62,12 @@ function getDate() {
 }
 
 
-(function saveNote() {
+
     container.addEventListener("click", function (event) {
         if (event.target.getAttribute("name") == "save") {
-            
-            console.log("Matanga Dijo la Changa!!!")
+            console.log(container)
         }
     });
-})();
-
 function enableText(b) {
     b.disabled = false;
     b.focus();
