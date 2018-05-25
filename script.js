@@ -8,21 +8,21 @@ var j = 0;
 
 (function createNote(a) {
     btnCreate = document.getElementById("btn");
-    var span = document.createElement("span");
     btnCreate.addEventListener("click", function () {
         var clon = a.content.cloneNode(true);
         fragment.appendChild(clon);
         var i = fragment.querySelector("i");
-        i.textContent = j + 1;
-        span.textContent = getDate();
-        i.appendChild(span);
+        i.childNodes[0].textContent = j + 1;  //properties o "i" ->childNodes [0] -> text
+        var span = fragment.querySelector("#created");
+        var innerSpan = document.createTextNode(getDate());
+        span.appendChild(innerSpan);
         container.appendChild(fragment);
         j++;
     });
 })(temp1);
 
 container.addEventListener("click", function (event) {
-    var data = [];
+    var data = [], textB = '';
     var textNode = '', edit = event.target.getAttribute("name");
     var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
     if (event.target.getAttribute("name") == "trash") {
@@ -33,15 +33,17 @@ container.addEventListener("click", function (event) {
             enableText(textarea);
         }
         else {
+            var noteContent = {};
             disableText(textarea)
             var b = event.target.firstChild;
-            b.nextElementSibling.textContent = getDate();
+            textB = document.createTextNode(getDate());
+            b.nextElementSibling.appendChild(textB);
             textNode = document.createTextNode(textarea.value);
             textarea.appendChild(textNode);
         }
     }
     if (event.target.getAttribute("name") == "save") {
-        console.log("Matanga dijo la changa")
+        
     }
 });
 
@@ -53,14 +55,11 @@ function getDate() {
     if (mins < "10") {
         mins = '0' + mins;
     }
-
     if (segs < '10') {
         segs = '0' + segs;
     }
-
     time = upDate.getHours() + ":" + mins + ":" + segs;
     date = upDate.getFullYear() + "/" + upDate.getMonth() + "/" + upDate.getDate();
-
     return date + " - " + time;
 }
 
