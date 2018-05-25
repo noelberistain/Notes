@@ -27,7 +27,7 @@ var j = 0;
     });
 
     container.addEventListener("click", function (event) {
-        var edit = event.target.getAttribute("name");
+        var textNode = '', edit = event.target.getAttribute("name");
         var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
         if (edit === "edit") {
             if (textarea.disabled) {
@@ -37,7 +37,8 @@ var j = 0;
                 disableText(textarea)
                 var b = event.target.firstChild;
                 b.nextElementSibling.textContent = getDate();
-
+                textNode = document.createTextNode(textarea.value);
+                textarea.appendChild(textNode);
             }
         }
     });
@@ -61,14 +62,13 @@ function getDate() {
     return date + " - " + time;
 }
 
-
-
     container.addEventListener("click", function (event) {
+        var data = [];
         if (event.target.getAttribute("name") == "save") {
-            console.log(container)
-            // probando probando
-        }
-    });
+
+            }
+        });
+    
 function enableText(b) {
     b.disabled = false;
     b.focus();
