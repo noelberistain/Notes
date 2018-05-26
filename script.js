@@ -14,36 +14,54 @@ var j = 0;
         var i = fragment.querySelector("i");
         i.childNodes[0].textContent = j + 1;  //properties o "i" ->childNodes [0] -> text
         var span = fragment.querySelector("#created");
-        var innerSpan = document.createTextNode(getDate());
-        span.appendChild(innerSpan);
+        var dateCreated = document.createTextNode(getDate());
+        span.appendChild(dateCreated);
         container.appendChild(fragment);
         j++;
     });
 })(temp1);
 
 container.addEventListener("click", function (event) {
-    var data = [], textB = '';
-    var textNode = '', edit = event.target.getAttribute("name");
+    var data = [], dateModified = '', b = '';
+    var textNode = '', attributeName = event.target.getAttribute("name");
     var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
-    if (event.target.getAttribute("name") == "trash") {
+    
+    //if i press the "TRASH" little icon(top-left)
+    if (attributeName === "trash") {
         container.removeChild(event.target.parentNode);
     }
-    if (edit === "edit") {
+
+    //if i press the "EDIT" icon (bottom-left)
+
+    if (attributeName === "edit") { //if I click the textarea element which is disabled by default, I enable the writing
         if (textarea.disabled) {
             enableText(textarea);
+            textarea.focus();
         }
-        else {
-            var noteContent = {};
+        else { //otherwise, CLICK again, and disable the wiriting.
             disableText(textarea)
-            var b = event.target.firstChild;
-            textB = document.createTextNode(getDate());
-            b.nextElementSibling.appendChild(textB);
+            b = event.target.firstChild;
+            dateModified = document.createTextNode(getDate());
+            b.nextElementSibling.appendChild(dateModified);
             textNode = document.createTextNode(textarea.value);
             textarea.appendChild(textNode);
         }
     }
-    if (event.target.getAttribute("name") == "save") {
+
+    //if i press the "SAVE" icon (bottom-right)
+    if (attributeName === "save") {
+        var noteContent = {};
+        var mainNote = event.target.parentNode;
+        noteContent.noteNumber = mainNote.firstChild.nextElementSibling.childNodes[0].data;
+        noteContent.dateCreated = mainNote.firstChild.nextSibling.innerText;
+        noteContent.dateModified = event.target.previousElementSibling.innerText;
         
+        
+        console.log(event.target)
+        noteContent.textarea = textarea.value;
+        console.log(noteContent);
+        data.push(noteContent);
+        localStorage.setItem("notes", JSON.stringify(data));
     }
 });
 
