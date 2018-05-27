@@ -5,6 +5,8 @@ fragment = document.createDocumentFragment();
 temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
 var j = 0;
+var notes = localStorage.getItem("notes");
+notes = notes ? JSON.parse(notes) : [];
 
 (function createNote(a) {
     btnCreate = document.getElementById("btn");
@@ -12,7 +14,7 @@ var j = 0;
         var clon = a.content.cloneNode(true);
         fragment.appendChild(clon);
         var i = fragment.querySelector("i");
-        i.childNodes[0].textContent = j + 1;  //properties o "i" ->childNodes [0] -> text
+        i.textContent = j + 1;
         var span = fragment.querySelector("#created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
@@ -22,10 +24,10 @@ var j = 0;
 })(temp1);
 
 container.addEventListener("click", function (event) {
-    var data = [], dateModified = '', b = '';
+    var dateModified = '', b = '';
     var textNode = '', attributeName = event.target.getAttribute("name");
     var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
-    
+
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
         container.removeChild(event.target.parentNode);
@@ -41,6 +43,9 @@ container.addEventListener("click", function (event) {
         else { //otherwise, CLICK again, and disable the wiriting.
             disableText(textarea)
             b = event.target.firstChild;
+            if (b.nextElementSibling.textContent.length > 0) {
+                b.nextElementSibling.textContent = '';
+            }
             dateModified = document.createTextNode(getDate());
             b.nextElementSibling.appendChild(dateModified);
             textNode = document.createTextNode(textarea.value);
@@ -53,15 +58,11 @@ container.addEventListener("click", function (event) {
         var noteContent = {};
         var mainNote = event.target.parentNode;
         noteContent.noteNumber = mainNote.firstChild.nextElementSibling.childNodes[0].data;
-        noteContent.dateCreated = mainNote.firstChild.nextSibling.innerText;
+        noteContent.dateCreated = mainNote.firstChild.nextElementSibling.nextElementSibling.innerText;
         noteContent.dateModified = event.target.previousElementSibling.innerText;
-        
-        
-        console.log(event.target)
         noteContent.textarea = textarea.value;
-        console.log(noteContent);
-        data.push(noteContent);
-        localStorage.setItem("notes", JSON.stringify(data));
+        notes.push(noteContent);
+        localStorage.setItem("notes", JSON.stringify(notes));
     }
 });
 
