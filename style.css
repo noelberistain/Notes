@@ -30,7 +30,7 @@ i.fa-edit{
     width: 95%;
     height: 5%;
 }
-i#updated{
+i.updated{
     padding: 0% 27%;
     font-size: .7em;
 }
@@ -44,7 +44,7 @@ i.fa-trash{
 span{
     float: right;
 }
-span#created{
+span.created{
     width: 50%;
     font-size: .7em;
 }

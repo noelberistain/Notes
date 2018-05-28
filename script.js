@@ -15,7 +15,7 @@ notes = notes ? JSON.parse(notes) : [];
         fragment.appendChild(clon);
         var i = fragment.querySelector("i");
         i.textContent = j + 1;
-        var span = fragment.querySelector("#created");
+        var span = fragment.querySelector(".created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
         container.appendChild(fragment);
@@ -57,9 +57,9 @@ container.addEventListener("click", function (event) {
     if (attributeName === "save") {
         var noteContent = {};
         var mainNote = event.target.parentNode;
-        noteContent.noteNumber = mainNote.firstChild.nextElementSibling.childNodes[0].data;
-        noteContent.dateCreated = mainNote.firstChild.nextElementSibling.nextElementSibling.innerText;
-        noteContent.dateModified = event.target.previousElementSibling.innerText;
+        noteContent.noteNumber = mainNote.querySelector(".fa-trash").innerText;
+        noteContent.dateCreated = mainNote.querySelector(".created").innerText;
+        noteContent.dateModified = mainNote.querySelector(".updated").innerText;
         noteContent.textarea = textarea.value;
         notes.push(noteContent);
         localStorage.setItem("notes", JSON.stringify(notes));
