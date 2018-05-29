@@ -25,21 +25,15 @@ body {
     width: 100%;
     height: 84%;
 }
-
-i.fa-edit{
-    width: 95%;
-    height: 5%;
-}
 i.updated{
-    padding: 0% 27%;
+    width: 100%;
+    height: .7em;
+    padding: 0% 2%;
     font-size: .7em;
 }
 i.fa-save{
     width: 5%;
     float: right;
-}
-i.fa-trash{
-    width: 50%;
 }
 span{
     float: right;
