@@ -6,16 +6,23 @@ temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
 var notes = localStorage.getItem("notes");
 notes = notes ? JSON.parse(notes) : [];
-var j = 0;
+// var j = 1;  var j...     Just display a number for every note
+
 if (notes.length > 0) {
     for (var key in notes) {
-        showNotes(temp1, key, notes[key].dateCreated, notes[key].dateModified, notes[key].textarea)
+        showNotes(temp1, 
+                    notes[key].key, 
+                    notes[key].dateCreated, 
+                    notes[key].dateModified, 
+                    notes[key].textarea);
     }
     function showNotes(temp1, num, crtd, updtd, txt) {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
-        var numNote = fragment.querySelector(".fa-trash");
-        numNote.innerText = num;
+        // var numNote = fragment.querySelector(".fa-trash");         So, not using
+        // numNote.innerText = j;                                     var J anymore
+        var keyNote = fragment.querySelector(".key");
+        keyNote.innerText = num;
         var span = fragment.querySelector(".created");
         span.innerText = crtd;
         var updated = fragment.querySelector(".updated");
@@ -23,25 +30,23 @@ if (notes.length > 0) {
         var textarea = fragment.querySelector(".innerText");
         textarea.innerText = txt;
         container.appendChild(fragment);
-    }
-    j = key;
+        // j++;                                                        no j var
+    } 
 }
-
 
 (function createNote(temp1) {
     btnCreate = document.getElementById("btn");
     btnCreate.addEventListener("click", function () {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
-        var iTrash = fragment.querySelector(".fa-trash");
-        iTrash.innerText = parseInt(j) + 1;
+        // var iTrash = fragment.querySelector(".fa-trash");           no more
+        // iTrash.innerText = j;                                       var j
         var span = fragment.querySelector(".created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
         container.appendChild(fragment);
         // j++;
     });
-
 })(temp1);
 
 container.addEventListener("click", function (event) {
@@ -53,8 +58,14 @@ container.addEventListener("click", function (event) {
 
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
-        
-        //container.removeChild(event.target.parentNode);
+        var spanKey = mainNote.querySelector(".key").innerText;
+        for (var key in notes) {
+            if(spanKey == notes[key].key){
+                notes.splice(key,1);
+            }
+        }
+        localStorage.setItem("notes", JSON.stringify(notes));
+        container.removeChild(event.target.parentNode);
     }
 
     //if i CLICK on text area
@@ -66,11 +77,9 @@ container.addEventListener("click", function (event) {
             disableText(textarea)
         }
     }
-
     //if i press the "SAVE" icon (bottom-right)
     if (attributeName === "save") {
         var noteContent = {};
-
         if (iUpdated.innerText.length > 0) {
             iUpdated.innerText = '';
         }
@@ -78,16 +87,19 @@ container.addEventListener("click", function (event) {
         iUpdated.appendChild(dateModified);
         textNode = document.createTextNode(textarea.value);
         textarea.appendChild(textNode);
-        noteContent.key = j;
+        noteContent.key = setKey();
         noteContent.dateCreated = iCreated.innerText;
         noteContent.dateModified = iUpdated.innerText;
         noteContent.textarea = textarea.value;
         notes.push(noteContent);
         localStorage.setItem("notes", JSON.stringify(notes));
-        j++;
     }
 });
 
+function setKey(){
+    var update = new Date();
+    return update.getMilliseconds();
+}
 function getDate() {
     var upDate, mins, secs, time, date;
     upDate = new Date();

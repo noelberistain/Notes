@@ -2,7 +2,8 @@ body {
     font-size: 16px;
     color: black;
 }
-#container{
+
+#container {
     background-color: mediumpurple;
     border: 1px dotted black;
     display: flex;
@@ -10,7 +11,8 @@ body {
     height: auto;
     width: 972px;
 }
-.mainNote{
+
+.mainNote {
     background-color: tan;
     border: 2px dotted black;
     height: 300px;
@@ -18,6 +20,7 @@ body {
     padding: 5px;
     width: 300px;
 }
+
 .innerText {
     background-color: lightgoldenrodyellow;
     outline: none;
@@ -25,20 +28,28 @@ body {
     width: 100%;
     height: 84%;
 }
-i.updated{
+
+i.fa-save {
+    width: 5%;
+    float: right;
+}
+
+i.updated {
     width: 100%;
     height: .7em;
     padding: 0% 2%;
     font-size: .7em;
 }
-i.fa-save{
-    width: 5%;
+
+span {
     float: right;
 }
-span{
-    float: right;
-}
-span.created{
+
+span.created {
     width: 50%;
     font-size: .7em;
+}
+
+span.key {
+    display: none;
 }
