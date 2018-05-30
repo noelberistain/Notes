@@ -6,7 +6,6 @@ temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
 var notes = localStorage.getItem("notes");
 notes = notes ? JSON.parse(notes) : [];
-// var j = 1;  var j...     Just display a number for every note
 
 if (notes.length > 0) {
     for (var key in notes) {
@@ -19,8 +18,6 @@ if (notes.length > 0) {
     function showNotes(temp1, num, crtd, updtd, txt) {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
-        // var numNote = fragment.querySelector(".fa-trash");         So, not using
-        // numNote.innerText = j;                                     var J anymore
         var keyNote = fragment.querySelector(".key");
         keyNote.innerText = num;
         var span = fragment.querySelector(".created");
@@ -30,7 +27,6 @@ if (notes.length > 0) {
         var textarea = fragment.querySelector(".innerText");
         textarea.innerText = txt;
         container.appendChild(fragment);
-        // j++;                                                        no j var
     }
 }
 
@@ -39,13 +35,11 @@ if (notes.length > 0) {
     btnCreate.addEventListener("click", function () {
         var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
-        // var iTrash = fragment.querySelector(".fa-trash");           no more
-        // iTrash.innerText = j;                                       var j
         var span = fragment.querySelector(".created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
+        var textarea = fragment.querySelector(".innerText");
         container.appendChild(fragment);
-        // j++;
     });
 })(temp1);
 
@@ -59,52 +53,49 @@ container.addEventListener("click", function (event) {
 
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
-        for (var key in notes) {
-            if (spanKey == notes[key].key) {
-                notes.splice(key, 1);
+        if(noteExist(spanKey)){
+                notes.splice(noteExist(spanKey), 1);
+                localStorage.setItem("notes", JSON.stringify(notes));
             }
-        }
-        localStorage.setItem("notes", JSON.stringify(notes));
         container.removeChild(event.target.parentNode);
     }
 
     //if i CLICK on text area
-    if (attributeName === "textArea") { //if I click the textarea element which is disabled by default, I enable the writing
+    if (attributeName === "textArea") { //if I click the textarea element which is disabled by default
         if (textarea.disabled) {
             enableText(textarea);
         }
-        // else { //otherwise, CLICK again, and disable the wiriting.
-        //     disableText(textarea)
-        // }
     }
     //if i press the "SAVE" icon (bottom-right)
     if (attributeName === "save") {
-        disableText(textarea)
-        if (notExist(spanKey)) {
-            // just modify, and replace the new modified note to the local Storate
-            // dont duplicate notes on local Storage
-            console.log(notExist(spanKey))
-            var modifying = notes.splice(notExist(spanKey),1);
-            console.log(modifying[0].textarea);
-        }
+        disableText(textarea);
         var noteContent = {};
+        var dateModified = getDate();
         if (iUpdated.innerText.length > 0) {
             iUpdated.innerText = '';
         }
-        var dateModified = document.createTextNode(getDate());
-        iUpdated.appendChild(dateModified);
-        textNode = document.createTextNode(textarea.value);
-        textarea.appendChild(textNode);
-        noteContent.key = setKey();
-        noteContent.dateCreated = iCreated.innerText;
-        noteContent.dateModified = iUpdated.innerText;
-        noteContent.textarea = textarea.value;
-        notes.push(noteContent);
-        localStorage.setItem("notes", JSON.stringify(notes));
+        if (noteExist(spanKey)) {
+
+            notes[noteExist(spanKey)].textarea = textarea.value;
+            notes[noteExist(spanKey)].dateModified = dateModified;
+            iUpdated.appendChild(document.createTextNode(dateModified));
+            localStorage.setItem("notes", JSON.stringify(notes));
+        }
+        else {
+            textNode = document.createTextNode(textarea.value);
+            textarea.appendChild(textNode);
+            noteContent.key = setKey();
+            noteContent.dateCreated = iCreated.innerText;
+            noteContent.textarea = textarea.value;
+            iUpdated.appendChild(document.createTextNode(dateModified));
+            noteContent.dateModified = iUpdated.innerText;
+            notes.push(noteContent);
+            localStorage.setItem("notes", JSON.stringify(notes));
+        }
     }
 });
 
-function notExist(a) {
+function noteExist(a) {
     for (var i in notes) {
         if (a == notes[i].key) {
             return i;

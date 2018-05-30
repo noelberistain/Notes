@@ -23,7 +23,7 @@ body {
 
 .innerText {
     background-color: lightgoldenrodyellow;
-    outline: none;
+    outline-color: red;
     resize: none;
     width: 100%;
     height: 84%;
