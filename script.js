@@ -4,44 +4,108 @@ var fragment, temp1, dateCreated = '', dateModified = '';
 fragment = document.createDocumentFragment();
 temp1 = document.getElementsByTagName("template")[0];
 var container = document.getElementById("container");
-var j = 0;
+var notes = localStorage.getItem("notes");
+notes = notes ? JSON.parse(notes) : [];
 
-(function createNote(a) {
-    btnCreate = document.getElementById("btn");
-    var span = document.createElement("span");
-    btnCreate.addEventListener("click", function () {
-        var clon = a.content.cloneNode(true);
+if (notes.length > 0) {
+    for (var key in notes) {
+        showNotes(temp1,
+            notes[key].key,
+            notes[key].dateCreated,
+            notes[key].dateModified,
+            notes[key].textarea);
+    }
+    function showNotes(temp1, num, crtd, updtd, txt) {
+        var clon = temp1.content.cloneNode(true);
         fragment.appendChild(clon);
-        var i = fragment.querySelector("i");
-        i.textContent = j + 1;
-        span.textContent = getDate();
-        i.appendChild(span);
+        var keyNote = fragment.querySelector(".key");
+        keyNote.innerText = num;
+        var span = fragment.querySelector(".created");
+        span.innerText = crtd;
+        var updated = fragment.querySelector(".updated");
+        updated.innerText = updtd;
+        var textarea = fragment.querySelector(".innerText");
+        textarea.innerText = txt;
         container.appendChild(fragment);
-        j++;
+    }
+}
+
+(function createNote(temp1) {
+    btnCreate = document.getElementById("btn");
+    btnCreate.addEventListener("click", function () {
+        var clon = temp1.content.cloneNode(true);
+        fragment.appendChild(clon);
+        var span = fragment.querySelector(".created");
+        var dateCreated = document.createTextNode(getDate());
+        span.appendChild(dateCreated);
+        var textarea = fragment.querySelector(".innerText");
+        container.appendChild(fragment);
     });
 })(temp1);
 
-    container.addEventListener("click", function (event) {
-        if (event.target.getAttribute("name") == "trash")
-            container.removeChild(event.target.parentNode);
-    });
+container.addEventListener("click", function (event) {
+    var textNode = '', attributeName = event.target.getAttribute("name");
+    var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
+    var mainNote = event.target.parentNode;
+    var iUpdated = mainNote.querySelector(".updated");
+    var iCreated = mainNote.querySelector(".created");
+    var spanKey = mainNote.querySelector(".key").innerText;
 
-    container.addEventListener("click", function (event) {
-        var edit = event.target.getAttribute("name");
-        var textarea = event.target.parentNode.getElementsByTagName("textarea")[0];
-        if (edit === "edit") {
-            if (textarea.disabled) {
-                enableText(textarea);
+    //if i press the "TRASH" little icon(top-left)
+    if (attributeName === "trash") {
+        if(noteExist(spanKey)){
+                notes.splice(noteExist(spanKey), 1);
+                localStorage.setItem("notes", JSON.stringify(notes));
             }
-            else {
-                disableText(textarea)
-                var b = event.target.firstChild;
-                b.nextElementSibling.textContent = getDate();
+        container.removeChild(event.target.parentNode);
+    }
 
-            }
+    //if i CLICK on text area
+    if (attributeName === "textArea") { //if I click the textarea element which is disabled by default
+        if (textarea.disabled) {
+            enableText(textarea);
         }
-    });
+    }
+    //if i press the "SAVE" icon (bottom-right)
+    if (attributeName === "save") {
+        disableText(textarea);
+        var noteContent = {};
+        var dateModified = getDate();
+        if (iUpdated.innerText.length > 0) {
+            iUpdated.innerText = '';
+        }
+        if (noteExist(spanKey)) {
 
+            notes[noteExist(spanKey)].textarea = textarea.value;
+            notes[noteExist(spanKey)].dateModified = dateModified;
+            iUpdated.appendChild(document.createTextNode(dateModified));
+            localStorage.setItem("notes", JSON.stringify(notes));
+        }
+        else {
+            textNode = document.createTextNode(textarea.value);
+            textarea.appendChild(textNode);
+            noteContent.key = setKey();
+            noteContent.dateCreated = iCreated.innerText;
+            noteContent.textarea = textarea.value;
+            iUpdated.appendChild(document.createTextNode(dateModified));
+            noteContent.dateModified = iUpdated.innerText;
+            notes.push(noteContent);
+            localStorage.setItem("notes", JSON.stringify(notes));
+        }
+    }
+});
+
+function noteExist(a) {
+    for (var i in notes) {
+        if (a == notes[i].key) {
+            return i;
+        }
+    }
+}
+function setKey() {
+    var update = new Date();
+    return update.getMilliseconds();
+}
 function getDate() {
     var upDate, mins, secs, time, date;
     upDate = new Date();
@@ -50,25 +114,13 @@ function getDate() {
     if (mins < "10") {
         mins = '0' + mins;
     }
-
     if (segs < '10') {
         segs = '0' + segs;
     }
-
     time = upDate.getHours() + ":" + mins + ":" + segs;
     date = upDate.getFullYear() + "/" + upDate.getMonth() + "/" + upDate.getDate();
-
     return date + " - " + time;
 }
-
-
-
-    container.addEventListener("click", function (event) {
-        if (event.target.getAttribute("name") == "save") {
-            console.log(container)
-            // probando probando
-        }
-    });
 function enableText(b) {
     b.disabled = false;
     b.focus();
