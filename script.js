@@ -10,11 +10,11 @@ notes = notes ? JSON.parse(notes) : [];
 
 if (notes.length > 0) {
     for (var key in notes) {
-        showNotes(temp1, 
-                    notes[key].key, 
-                    notes[key].dateCreated, 
-                    notes[key].dateModified, 
-                    notes[key].textarea);
+        showNotes(temp1,
+            notes[key].key,
+            notes[key].dateCreated,
+            notes[key].dateModified,
+            notes[key].textarea);
     }
     function showNotes(temp1, num, crtd, updtd, txt) {
         var clon = temp1.content.cloneNode(true);
@@ -31,7 +31,7 @@ if (notes.length > 0) {
         textarea.innerText = txt;
         container.appendChild(fragment);
         // j++;                                                        no j var
-    } 
+    }
 }
 
 (function createNote(temp1) {
@@ -55,13 +55,13 @@ container.addEventListener("click", function (event) {
     var mainNote = event.target.parentNode;
     var iUpdated = mainNote.querySelector(".updated");
     var iCreated = mainNote.querySelector(".created");
+    var spanKey = mainNote.querySelector(".key").innerText;
 
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
-        var spanKey = mainNote.querySelector(".key").innerText;
         for (var key in notes) {
-            if(spanKey == notes[key].key){
-                notes.splice(key,1);
+            if (spanKey == notes[key].key) {
+                notes.splice(key, 1);
             }
         }
         localStorage.setItem("notes", JSON.stringify(notes));
@@ -73,12 +73,20 @@ container.addEventListener("click", function (event) {
         if (textarea.disabled) {
             enableText(textarea);
         }
-        else { //otherwise, CLICK again, and disable the wiriting.
-            disableText(textarea)
-        }
+        // else { //otherwise, CLICK again, and disable the wiriting.
+        //     disableText(textarea)
+        // }
     }
     //if i press the "SAVE" icon (bottom-right)
     if (attributeName === "save") {
+        disableText(textarea)
+        if (notExist(spanKey)) {
+            // just modify, and replace the new modified note to the local Storate
+            // dont duplicate notes on local Storage
+            console.log(notExist(spanKey))
+            var modifying = notes.splice(notExist(spanKey),1);
+            console.log(modifying[0].textarea);
+        }
         var noteContent = {};
         if (iUpdated.innerText.length > 0) {
             iUpdated.innerText = '';
@@ -96,7 +104,14 @@ container.addEventListener("click", function (event) {
     }
 });
 
-function setKey(){
+function notExist(a) {
+    for (var i in notes) {
+        if (a == notes[i].key) {
+            return i;
+        }
+    }
+}
+function setKey() {
     var update = new Date();
     return update.getMilliseconds();
 }
