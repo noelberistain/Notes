@@ -14,28 +14,30 @@ if (notes.length > 0) {
             notes[key].dateCreated,
             notes[key].dateModified,
             notes[key].textarea);
+        }
+        function showNotes(temp1, num, crtd, updtd, txt) {
+            var clon = temp1.content.cloneNode(true);
+            fragment.appendChild(clon);
+            var keyNote = fragment.querySelector(".key");
+            keyNote.innerText = num;
+            var span = fragment.querySelector(".created");
+            span.innerText = crtd;
+            var updated = fragment.querySelector(".updated");
+            updated.innerText = updtd;
+            var textarea = fragment.querySelector(".innerText");
+            textarea.innerText = txt;
+            textarea.addEventListener("click", function(){
+            });
+            container.appendChild(fragment);
+        }
     }
-    function showNotes(temp1, num, crtd, updtd, txt) {
-        var clon = temp1.content.cloneNode(true);
-        fragment.appendChild(clon);
-        var keyNote = fragment.querySelector(".key");
-        keyNote.innerText = num;
-        var span = fragment.querySelector(".created");
-        span.innerText = crtd;
-        var updated = fragment.querySelector(".updated");
-        updated.innerText = updtd;
-        var textarea = fragment.querySelector(".innerText");
-        textarea.innerText = txt;
-        container.appendChild(fragment);
-    }
-}
-
-(function createNote(temp1) {
-    btnCreate = document.getElementById("btn");
-    btnCreate.addEventListener("click", function () {
-        var clon = temp1.content.cloneNode(true);
-        fragment.appendChild(clon);
-        var span = fragment.querySelector(".created");
+    
+    (function createNote(temp1) {
+        btnCreate = document.getElementById("btn");
+        btnCreate.addEventListener("click", function () {
+            var clon = temp1.content.cloneNode(true);
+            fragment.appendChild(clon);
+            var span = fragment.querySelector(".created");
         var dateCreated = document.createTextNode(getDate());
         span.appendChild(dateCreated);
         var textarea = fragment.querySelector(".innerText");
@@ -50,6 +52,7 @@ container.addEventListener("click", function (event) {
     var iUpdated = mainNote.querySelector(".updated");
     var iCreated = mainNote.querySelector(".created");
     var spanKey = mainNote.querySelector(".key").innerText;
+    var iEdited = mainNote.querySelector(".fa-edit");
 
     //if i press the "TRASH" little icon(top-left)
     if (attributeName === "trash") {
@@ -60,15 +63,17 @@ container.addEventListener("click", function (event) {
         container.removeChild(event.target.parentNode);
     }
 
-    //if i CLICK on text area
-    if (attributeName === "textArea") { //if I click the textarea element which is disabled by default
+    // if i CLICK on edit button
+    if (attributeName === "edit") { //if I click the textarea element which is disabled by default
         if (textarea.disabled) {
             enableText(textarea);
+            iEdited.style.display = "none";
         }
     }
     //if i press the "SAVE" icon (bottom-right)
     if (attributeName === "save") {
         disableText(textarea);
+        iEdited.style.display = "inline";
         var noteContent = {};
         var dateModified = getDate();
         if (iUpdated.innerText.length > 0) {
@@ -122,8 +127,9 @@ function getDate() {
     return date + " - " + time;
 }
 function enableText(b) {
-    b.disabled = false;
+    b.disabled = !b.disabled || false || b.setAttribute("style","disable = false");
     b.focus();
+    // b.preventDefault();
 }
 function disableText(b) {
     b.disabled = true;
